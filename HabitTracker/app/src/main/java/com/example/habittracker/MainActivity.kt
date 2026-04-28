@@ -34,9 +34,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.habittracker.data.Habit
@@ -58,15 +60,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun TituloApp() {
-    Text(
-        text = "Gestor de Tareas",
-        style =
-            MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.primary
-    )
-}
 @Preview(showBackground = true)
 @Composable
 fun PreviewApp() {
@@ -87,30 +80,32 @@ fun HabitItem(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
+        .fillMaxWidth()
+        .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(modifier = Modifier.weight(1f)) {
-            Checkbox(
-                checked = habit.isCompletedToday,
-                onCheckedChange = onToggle
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+        Checkbox(
+            checked = habit.isCompletedToday,
+            onCheckedChange = onToggle
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Text(
                 text = habit.title,
-                style = if (habit.isCompletedToday)
-                    MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                else
-                    MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    textDecoration = if (habit.isCompletedToday) TextDecoration.LineThrough else TextDecoration.None,
+                ),
+                color = if (habit.isCompletedToday) Color(0xFF4CAF50).copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurface
             )
         }
         Button(onClick = onDelete) {
             Text("Eliminar")
         }
     }
+
 }
 
 @Composable
@@ -136,11 +131,16 @@ fun HabitTrackerApp(viewModel: HabitViewModel) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Habit Tracker",
-            style =
-                MaterialTheme.typography.headlineMedium
-        )
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Habit Tracker",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
         // Barra de progreso
         LinearProgressIndicator(
@@ -177,17 +177,30 @@ fun HabitTrackerApp(viewModel: HabitViewModel) {
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        LazyColumn {
-            items(habitsFiltrados, key = { it.id }) { habit ->
-                HabitItem(
-                    habit = habit,
-                    onToggle = { checked ->
-                        viewModel.actualizarHabit(habit.copy(isCompletedToday = checked))
-                    },
-                    onDelete = {
-                        viewModel.eliminarHabit(habit)
-                    }
+
+        if (habitsFiltrados.isEmpty()) {
+            Column (
+                modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "No hay habitos",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+        } else {
+            LazyColumn {
+                items(habitsFiltrados, key = { it.id }) { habit ->
+                    HabitItem(
+                        habit = habit,
+                        onToggle = { checked ->
+                            viewModel.actualizarHabit(habit.copy(isCompletedToday = checked))
+                        },
+                        onDelete = {
+                            viewModel.eliminarHabit(habit)
+                        }
+                    )
+                }
             }
         }
     }
