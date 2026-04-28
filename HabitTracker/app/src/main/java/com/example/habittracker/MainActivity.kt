@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.habittracker.data.Habit
 import com.example.habittracker.data.HabitDatabase
 import com.example.habittracker.data.HabitViewModel
 
@@ -45,12 +47,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-data class Habit(
-    val id: Int,
-    val title: String,
-    val isCompletedToday: Boolean
-)
 
 @Composable
 fun TituloApp() {
@@ -110,7 +106,7 @@ fun HabitItem(
 @Composable
 fun HabitTrackerApp(viewModel: HabitViewModel) {
     var input by  remember { mutableStateOf("") }
-    val habits = remember { mutableStateListOf<Habit>() }
+    val habits by viewModel.habits.collectAsState(initial = emptyList())
     // Cálculo derivado (recomposición inteligente)
     val completedCount = habits.count { it.isCompletedToday }
     val progress = if (habits.isNotEmpty()) { completedCount.toFloat() / habits.size
@@ -146,12 +142,7 @@ fun HabitTrackerApp(viewModel: HabitViewModel) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = {
                 if (input.isNotBlank()) {
-                    habits.add(Habit(
-                        id = habits.size,
-                        title = input,
-                        isCompletedToday = false
-                    )
-                    )
+                    viewModel.agregarHabit(input)
                     input = ""
                 }
             }) {
@@ -164,14 +155,10 @@ fun HabitTrackerApp(viewModel: HabitViewModel) {
                 HabitItem(
                     habit = habit,
                     onToggle = { checked ->
-                        val index = habits.indexOf(habit)
-                        if (index != -1) {
-                            habits[index] =
-                                habit.copy(isCompletedToday = checked)
-                        }
+                        viewModel.actualizarHabit(habit.copy(isCompletedToday = checked))
                     },
                     onDelete = {
-                        habits.remove(habit)
+                        viewModel.eliminarHabit(habit)
                     }
                 )
             }
