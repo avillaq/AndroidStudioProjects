@@ -27,15 +27,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.habittracker.data.HabitDatabase
+import com.example.habittracker.data.HabitViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val db = HabitDatabase.getDatabase(applicationContext)
+        val viewModel = HabitViewModel(db.habitDao())
         setContent {
             MaterialTheme{
-                HabitTrackerApp()
+                HabitTrackerApp(viewModel)
             }
         }
     }
@@ -60,7 +65,10 @@ fun TituloApp() {
 @Composable
 fun PreviewApp() {
     MaterialTheme {
-        HabitTrackerApp()
+        val context = LocalContext.current
+        val db = HabitDatabase.getDatabase(context)
+        val viewModel = HabitViewModel(db.habitDao())
+        HabitTrackerApp(viewModel)
     }
 }
 
@@ -100,7 +108,7 @@ fun HabitItem(
 }
 
 @Composable
-fun HabitTrackerApp() {
+fun HabitTrackerApp(viewModel: HabitViewModel) {
     var input by  remember { mutableStateOf("") }
     val habits = remember { mutableStateListOf<Habit>() }
     // Cálculo derivado (recomposición inteligente)

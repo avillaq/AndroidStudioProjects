@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class HabitViewMovel(private val dao: HabitDao) : ViewModel() {
+class HabitViewModel(private val dao: HabitDao) : ViewModel() {
     val habits = dao.getAllHabits()
 
     fun agregarHabit(title: String) {
