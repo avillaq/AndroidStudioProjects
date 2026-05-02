@@ -2,4 +2,8 @@
 <resources>
 
     <style name="Theme.HabitTracker" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Starting" parent="Theme.HabitTracker">
+        <item name="android:windowBackground">#F7FBF1</item>
+    </style>
 </resources>
