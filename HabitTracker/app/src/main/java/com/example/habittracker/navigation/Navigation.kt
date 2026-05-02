@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.habittracker.data.HabitViewModel
 import com.example.habittracker.ui.screens.HomeScreen
 import com.example.habittracker.ui.screens.SplashScreen
+import com.example.habittracker.ui.screens.StreakScreen
 
 @Composable
 fun Navigation(navController: NavHostController) {
@@ -21,7 +22,14 @@ fun Navigation(navController: NavHostController) {
         }
         composable(route = Screen.Home.route) {
             val viewModel: HabitViewModel = hiltViewModel()
-            HomeScreen(viewModel = viewModel)
+            HomeScreen(
+                viewModel = viewModel,
+                onNavigateToStreaks = { navController.navigate(Screen.Streaks.route) }
+            )
+        }
+        composable(route = Screen.Streaks.route) {
+            val viewModel: HabitViewModel = hiltViewModel()
+            StreakScreen(viewModel = viewModel)
         }
     }
 }

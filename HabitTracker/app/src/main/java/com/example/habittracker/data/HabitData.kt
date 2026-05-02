@@ -9,5 +9,7 @@ import androidx.room.PrimaryKey
 data class Habit(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
-    val isCompletedToday: Boolean = false
+    val isCompletedToday: Boolean = false,
+    val lastCompletedDate: Long? = null,
+    val streakCount: Int = 0
 )

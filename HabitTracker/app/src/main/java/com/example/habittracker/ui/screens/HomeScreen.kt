@@ -42,7 +42,7 @@ import com.example.habittracker.data.HabitViewModel
 enum class FiltroHabit { TODOS, COMPLETADOS, NO_COMPLETADOS }
 
 @Composable
-fun HomeScreen(viewModel: HabitViewModel) {
+fun HomeScreen(viewModel: HabitViewModel, onNavigateToStreaks: () -> Unit) {
     var input by  remember { mutableStateOf("") }
     val habits by viewModel.habits.collectAsState(initial = emptyList())
 
@@ -101,6 +101,11 @@ fun HomeScreen(viewModel: HabitViewModel) {
             }) {
                 Text("Agregar")
             }
+            Button(onClick = {
+                onNavigateToStreaks()
+            }) {
+                Text("Ver rachas")
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -127,7 +132,7 @@ fun HomeScreen(viewModel: HabitViewModel) {
                     HabitItem(
                         habit = habit,
                         onToggle = { checked ->
-                            viewModel.actualizarHabit(habit.copy(isCompletedToday = checked))
+                            viewModel.toggleHabitCompletion(habit)
                         },
                         onDelete = {
                             viewModel.eliminarHabit(habit)

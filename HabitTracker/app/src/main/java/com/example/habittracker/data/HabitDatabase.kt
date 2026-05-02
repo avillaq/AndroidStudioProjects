@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 // 3. Se crea la base de datos
 // Configura la base de datos física.
-@Database(entities = [Habit::class], version = 1, exportSchema = false)
+@Database(entities = [Habit::class], version = 2, exportSchema = false)
 abstract class HabitDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
 
@@ -21,7 +21,7 @@ abstract class HabitDatabase : RoomDatabase() {
                     context,
                     HabitDatabase::class.java,
                     "habit_db"
-                ).build()
+                ).fallbackToDestructiveMigration(true).build()
                 INSTANCE = instance
                 instance
             }
