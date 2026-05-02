@@ -2,26 +2,31 @@ package com.example.habittracker.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HabitViewModel(private val dao: HabitDao) : ViewModel() {
-    val habits = dao.getAllHabits()
+// 7. Se crea el ViewModel.
+// Toma los datos del Repositorio y los prepara para la UI.
+@HiltViewModel
+class HabitViewModel @Inject constructor(private val repository: HabitRepository) : ViewModel() {
+    val habits = repository.getAllHabits()
 
     fun agregarHabit(title: String) {
         viewModelScope.launch {
-            dao.insertHabit(Habit(title = title))
+            repository.insert(Habit(title = title))
         }
     }
 
-    fun actualizarHabit(tarea: Habit) {
+    fun actualizarHabit(habit: Habit) {
         viewModelScope.launch {
-            dao.updateHabit(tarea)
+            repository.update(habit)
         }
     }
 
-    fun eliminarHabit(tarea: Habit) {
+    fun eliminarHabit(habit: Habit) {
         viewModelScope.launch {
-            dao.deleteHabit(tarea)
+            repository.delete(habit)
         }
     }
 }

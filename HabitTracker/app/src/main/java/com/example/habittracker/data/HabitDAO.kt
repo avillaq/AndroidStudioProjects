@@ -7,6 +7,8 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+// 2. Se crea el DAO
+// Define qué acciones puedes hacer en la base de datos (SQL).
 @Dao
 interface HabitDao {
     @Query("SELECT * FROM habits")
