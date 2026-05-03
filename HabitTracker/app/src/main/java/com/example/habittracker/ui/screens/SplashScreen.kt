@@ -40,7 +40,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 easing = { OvershootInterpolator(4f).getInterpolation(it) }
             )
         )
-        delay(2000L)
+        delay(1500L)
         onTimeout()
     }
 

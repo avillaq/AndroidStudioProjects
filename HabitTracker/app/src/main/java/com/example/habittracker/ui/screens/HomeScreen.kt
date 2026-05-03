@@ -1,5 +1,6 @@
 package com.example.habittracker.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,18 +32,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.habittracker.data.Habit
-import com.example.habittracker.data.HabitDatabase
 import com.example.habittracker.data.HabitViewModel
 
 enum class FiltroHabit { TODOS, COMPLETADOS, NO_COMPLETADOS }
 
 @Composable
-fun HomeScreen(viewModel: HabitViewModel, onNavigateToStreaks: () -> Unit) {
+fun HomeScreen(
+        viewModel: HabitViewModel,
+        onNavigateToStreaks: () -> Unit,
+        onNavigateToHistory: (Int) -> Unit
+    ) {
     var input by  remember { mutableStateOf("") }
     val habits by viewModel.habits.collectAsState(initial = emptyList())
 
@@ -136,7 +138,8 @@ fun HomeScreen(viewModel: HabitViewModel, onNavigateToStreaks: () -> Unit) {
                         },
                         onDelete = {
                             viewModel.eliminarHabit(habit)
-                        }
+                        },
+                        onNavigateToHistory = onNavigateToHistory
                     )
                 }
             }
@@ -148,7 +151,8 @@ fun HomeScreen(viewModel: HabitViewModel, onNavigateToStreaks: () -> Unit) {
 fun HabitItem(
     habit: Habit,
     onToggle: (Boolean) -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onNavigateToHistory: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -163,7 +167,7 @@ fun HabitItem(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).clickable { onNavigateToHistory(habit.id) }
         ) {
             Text(
                 text = habit.title,

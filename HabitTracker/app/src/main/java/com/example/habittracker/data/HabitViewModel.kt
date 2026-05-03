@@ -1,7 +1,6 @@
 package com.example.habittracker.data
 
-import android.icu.util.Calendar
-import androidx.compose.foundation.layout.add
+import java.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,27 +35,32 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
             val today = getStartOfDayMillis(0)
             val yesterday = getStartOfDayMillis(-1)
 
-            val updatedHabit = if (!habit.isCompletedToday) {
-                // MARCANDO COMO COMPLETADO
+            if (!habit.isCompletedToday) {
+                // cuando el habito es completado (racha)
                 val newStreak = when (habit.lastCompletedDate) {
-                    yesterday -> habit.streakCount + 1 // Era racha, aumenta
-                    today -> habit.streakCount // Ya se había marcado hoy, se mantiene
-                    else -> 1 // Se rompió la racha o es nuevo, empieza en 1
+                    yesterday -> habit.streakCount + 1 // marca primera vez hoy, sube la racha
+                    today -> habit.streakCount // en caso de que ya se haya marcado hoy, se mantiene (no creo que pase)
+                    else -> 1 // aqui cuando se rompe la racha o es un nuevo habito
                 }
-                habit.copy(
+                repository.update(habit.copy(
                     isCompletedToday = true,
                     lastCompletedDate = today,
                     streakCount = newStreak
-                )
+                ))
+
+                // se guarda en el historial
+                repository.insertLog(HabitLog(habitId = habit.id, date = today))
             } else {
-                // DESMARCANDO (Corrección de error)
-                habit.copy(
+                // cuando se desmarca un completado (Racha)
+                repository.update(habit.copy(
                     isCompletedToday = false,
                     streakCount = (habit.streakCount - 1).coerceAtLeast(0),
                     lastCompletedDate = yesterday
-                )
+                ))
+
+                // se elimina del historial
+                repository.deleteLog(habit.id, today)
             }
-            repository.update(updatedHabit)
         }
     }
 
@@ -65,6 +69,8 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
             repository.delete(habit)
         }
     }
+
+    fun getLogsForHabit(habitId: Int) = repository.getLogsForHabit(habitId)
 
     // obtiene el timestamp de "hoy" a las 00:00:00
     private fun getStartOfDayMillis(daysOffset: Int): Long {
