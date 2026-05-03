@@ -35,7 +35,10 @@ fun Navigation(navController: NavHostController) {
         }
         composable(route = Screen.Streaks.route) {
             val viewModel: HabitViewModel = hiltViewModel()
-            StreakScreen(viewModel = viewModel)
+            StreakScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
         composable(
             route = Screen.History.route,
@@ -43,7 +46,11 @@ fun Navigation(navController: NavHostController) {
         ) { backStackEntry ->
             val habitId = backStackEntry.arguments?.getInt("habitId") ?: 0
             val viewModel: HabitViewModel = hiltViewModel()
-            HistoryScreen(habitId = habitId, viewModel = viewModel)
+            HistoryScreen(
+                habitId = habitId,
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
