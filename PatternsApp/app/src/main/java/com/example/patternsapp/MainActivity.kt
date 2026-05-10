@@ -53,7 +53,7 @@ fun AntiPatternScreen() {
         }
         LazyColumn {
             items(users) { user ->
-                val expensiveCalculation = List(20000) {
+                val calculation = List(20000) {
                     kotlin.math.sqrt(it.toDouble())
                 }.sum()
                 Text(
@@ -88,7 +88,7 @@ fun KeysImprovedScreen() {
                 items = users,
                 key = { it.id }
             ) { user ->
-                val expensiveCalculation = List(20000) {
+                val calculation = List(20000) {
                     kotlin.math.sqrt(it.toDouble())
                 }.sum()
                 Text(
@@ -140,7 +140,7 @@ fun UserItem(user: User) {
             .clickable { expanded = !expanded }
             .padding(16.dp)
     ) {
-        val expensiveCalculation = List(20000) {
+        val calculation = List(20000) {
             kotlin.math.sqrt(it.toDouble())
         }.sum()
         Text(user.name)
@@ -220,7 +220,7 @@ fun UserItemOptimized(user: User, modifier: Modifier) {
             expanded = !expanded
         }
     ) {
-        val expensiveCalculation = List(20000) {
+        val calculation = List(20000) {
             kotlin.math.sqrt(it.toDouble())
         }.sum()
         Text(user.name)
