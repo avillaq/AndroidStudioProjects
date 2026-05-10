@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PatternsApp"
 include(":app")
- 
+include(":benchmark")
