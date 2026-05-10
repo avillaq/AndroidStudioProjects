@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PatternsAppTheme {
-                AntiPatternScreen()
+                OptimizedModifiersScreen()
             }
         }
     }
@@ -53,6 +53,9 @@ fun AntiPatternScreen() {
         }
         LazyColumn {
             items(users) { user ->
+                val expensiveCalculation = List(20000) {
+                    kotlin.math.sqrt(it.toDouble())
+                }.sum()
                 Text(
                     text = user.name,
                     modifier = Modifier
@@ -85,6 +88,9 @@ fun KeysImprovedScreen() {
                 items = users,
                 key = { it.id }
             ) { user ->
+                val expensiveCalculation = List(20000) {
+                    kotlin.math.sqrt(it.toDouble())
+                }.sum()
                 Text(
                     text = user.name,
                     modifier = Modifier
@@ -134,6 +140,9 @@ fun UserItem(user: User) {
             .clickable { expanded = !expanded }
             .padding(16.dp)
     ) {
+        val expensiveCalculation = List(20000) {
+            kotlin.math.sqrt(it.toDouble())
+        }.sum()
         Text(user.name)
         if (expanded) {
             Text("Detalles del usuario ${user.id}")
@@ -211,6 +220,9 @@ fun UserItemOptimized(user: User, modifier: Modifier) {
             expanded = !expanded
         }
     ) {
+        val expensiveCalculation = List(20000) {
+            kotlin.math.sqrt(it.toDouble())
+        }.sum()
         Text(user.name)
         if (expanded) {
             Text("Detalles del usuario ${user.id}")
